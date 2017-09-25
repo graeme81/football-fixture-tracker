@@ -1,0 +1,30 @@
+#list{
+	float: left;
+	border: 1px solid black;
+	/*height: 200px;
+	width: 200px;*/
+	padding: 10px;
+	margin-top: 10px;
+	margin-right: 20px;
+	margin-left: 40px;
+}
+
+#fix{
+	float: left;
+	border: 1px solid red;
+	height: 200px;
+	width: 200px;
+	margin-top: 10px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+
+#match{
+	float: left;
+	border: 1px solid blue;
+	height: 200px;
+	width: 200px;
+	margin-top: 10px;
+	margin-right: 40px;
+	margin-left: 20px;
+}
