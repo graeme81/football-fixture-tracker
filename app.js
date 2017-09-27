@@ -1,33 +1,29 @@
 var num;
-var leagues = [];
+let leagues = [];
 let comps = [];
-let topper;
+let topper, match, info;
 
- var makeRequest = function(url, callback){
+ let makeRequest = function(url, callback){
  	
-  var request = new XMLHttpRequest();
+  let request = new XMLHttpRequest();
   request.open('GET', url);
   request.setRequestHeader('X-Auth-Token', "d05a758a12b345e9802a6953707abd2e");
   request.onload = callback;
   request.send();
 };
 
-var requestComplete = function(){
+let requestComplete = function(){
 
   if (this.status !== 200) return;
 
-    var jsonString = this.responseText;
-    var data = JSON.parse(jsonString);
-
-    // console.log(data.length);
+    let jsonString = this.responseText;
+    let data = JSON.parse(jsonString);
 
     displayLeagueHeadings(data);
 };
 
 
-var displayLeagueHeadings = function(data){
-	
-  var div = document.getElementById('fixtures');
+let displayLeagueHeadings = function(data){
 
   for (let i = 0; i < data.length; i++){
   	let p = document.createElement('div');
@@ -45,22 +41,6 @@ var displayLeagueHeadings = function(data){
 
   collectFixtures();
   
-
-
-  // for(var i = 1; i < data.length; i++){
-
-  //   var p = document.createElement('p');
-  //   p.setAttribute('id','p'+i); 
-  //   p.innerText = data[i].caption;
-
-  //   num = i;
-  //   div.appendChild(p);
-
-  //   url = data[i]._links.fixtures.href;
-  //   makeRequest(url, getFixtures);
-    
-  //   console.log(num);
-  // };
 };
 
 let collectFixtures = function(){
@@ -73,7 +53,8 @@ let collectFixtures = function(){
 		let stuff = "clicked on "+ leagues[i];
 
 		btn.onclick = function(){
-			document.getElementById('fix').innerText = ''; 
+			document.getElementById('fix').innerText = "";
+      document.getElementById('match').innerText = "";
 			topper = comps[i];
 			makeRequest(leagues[i], printFixtures)
 		}
@@ -87,55 +68,98 @@ let collectFixtures = function(){
 let printFixtures = function(){
 	if (this.status !== 200) return;
 
-    var jsonString = this.responseText;
-    var data = JSON.parse(jsonString);
-
+    let jsonString = this.responseText;
+    let data = JSON.parse(jsonString);
     let games = data.fixtures;
+
+    let fixList = document.getElementById('fix'); 
 
     let heading = document.createElement('h3');
     let text = document.createTextNode(topper);
-    
     heading.appendChild(text);
+    fixList.appendChild(heading);
 
-    document.getElementById('fix').appendChild(heading);
-
-    //appendChild(heading);
+    let table = document.createElement('table');
 
     games.forEach(function(tie){
+
     	if (tie.status === "TIMED"){
-    		//let li = document.createElement('li');
-    		//console.log(tie.homeTeamName + ' vs ' + tie.awayTeamName);
+    		let row = document.createElement('tr');
+
+    		let ht = document.createElement('td');
+    		let versus = document.createElement('td');
+    		let at = document.createElement('td');
+    		let butn = document.createElement('input');
+    		butn.type = 'button';
+
+    		let home = document.createTextNode(tie.homeTeamName);
+    		let vs = document.createTextNode('vs');
+    		let away = document.createTextNode(tie.awayTeamName);
+
+    		ht.appendChild(home);
+    		versus.appendChild(vs);
+    		at.appendChild(away);
+    		butn.value = "See Match";
+
+    	  let mtch = {
+                    game: tie.homeTeamName + " vs " + tie.awayTeamName,
+                    ht: tie.homeTeamName,
+                    at: tie.awayTeamName, 
+                    comp: tie._links.competition.href+"/leagueTable"
+                  };
+
+
+    		butn.onclick = function(){
+				    document.getElementById('match').innerText = "";
+				    info = mtch;
+            makeRequest(info.comp, matchStats);
+
+  			}
+
+    		row.appendChild(ht);
+    		row.appendChild(versus);
+    		row.appendChild(at);
+    		row.appendChild(butn);
+
+    		table.appendChild(row);
     		
+    		fixList.appendChild(table);	
     	}
     });
 
+    fixList.appendChild(table);
+
 }
 
+let matchStats = function(){
 
-
-var getFixtures = function(){
-  console.log('happened');
   if (this.status !== 200) return;
-    var jsonString = this.responseText;
-    var data = JSON.parse(jsonString);
 
-    games = data.fixtures;
+    let jsonString = this.responseText;
+    let data = JSON.parse(jsonString);
 
-    games.forEach(function(tie){
-      if((tie.status==='SCHEDULED'|| tie.status ==='TIMED' ) && tie.odds){
+  console.log(info);
+	console.log(data);
 
-        var li = document.createElement('li');
-        li.innerText = tie.homeTeamName + " vs " + tie.awayTeamName;
-        console.log(num);
-        var p = document.getElementById('p'+num);
+    let gameStat = document.getElementById('match');
 
-        p.appendChild(li);
-        
-      }
-    });
+    let title = document.createElement('div');
+    let hteam = document.createElement('div');
+    let ateam = document.createElement('div');
+    let top = document.createElement('h3');
+    let text = document.createTextNode(info.game);
+
+   // top.innerHTML(info.game);
+    top.appendChild(text);
+    title.appendChild(top);
+    hteam.id = "home";
+    ateam.id = "away";
+
+    gameStat.appendChild(title);
+    gameStat.appendChild(hteam);
+    gameStat.appendChild(ateam);
+
 }
-
-
 
 var app = function(){
   var url = "http://api.football-data.org/v1/competitions";
