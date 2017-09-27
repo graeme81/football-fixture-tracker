@@ -76,6 +76,7 @@ let printFixtures = function(){
 
     let heading = document.createElement('h3');
     let text = document.createTextNode(topper);
+
     heading.appendChild(text);
     fixList.appendChild(heading);
 
@@ -138,18 +139,17 @@ let matchStats = function(){
     let jsonString = this.responseText;
     let data = JSON.parse(jsonString);
 
-  console.log(info);
-	console.log(data);
+    console.log(info);
+	  console.log(data);
 
     let gameStat = document.getElementById('match');
 
     let title = document.createElement('div');
     let hteam = document.createElement('div');
     let ateam = document.createElement('div');
-    let top = document.createElement('h3');
-    let text = document.createTextNode(info.game);
+    let top   = document.createElement('h3');
+    let text  = document.createTextNode(info.game);
 
-   // top.innerHTML(info.game);
     top.appendChild(text);
     title.appendChild(top);
     hteam.id = "home";
@@ -159,6 +159,35 @@ let matchStats = function(){
     gameStat.appendChild(hteam);
     gameStat.appendChild(ateam);
 
+    let table = data.standing
+
+    table.forEach(function(team){
+      if (info.ht === team.teamName){
+        let stat = document.getElementById("home");
+        stat.innerHTML = team.teamName 
+                         + "<br>" 
+                         + "Points: " + team.points 
+                         + "<br>"
+                         + "Goals For: " + team.goals
+                         + "<br>"
+                         + "Goals Against: " + team.goalsAgainst
+                         + "<br>"
+                         + "Goal Difference: " + team.goalDifference ;
+
+      }else if(info.at === team.teamName){
+        let stat = document.getElementById("away");
+        stat.innerHTML = team.teamName 
+                         + "<br>" 
+                         + "Points: " + team.points 
+                         + "<br>"
+                         + "Goals For: " + team.goals
+                         + "<br>"
+                         + "Goals Against: " + team.goalsAgainst
+                         + "<br>"
+                         + "Goal Difference: " + team.goalDifference ;
+      
+      }
+    });
 }
 
 var app = function(){

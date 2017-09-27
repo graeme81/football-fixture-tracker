@@ -26,13 +26,11 @@
 #home{
 	border: 5px solid green;
 	float: left;
-	height: 100px;
-	width: 100px;
+	width: 45%;
 }
 
 #away{
 	border: 5px solid orange;
-	float: left;
-	height: 100px;
-	width: 100px;
+	float: right;
+	width: 45%;
 }
